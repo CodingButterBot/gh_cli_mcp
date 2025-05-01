@@ -1,0 +1,70 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__github__gh_pr_list",
+      "mcp__github__gh_pr_view",
+      "mcp__github__gh_pr_create",
+      "mcp__github__gh_pr_close",
+      "mcp__github__gh_issue_list",
+      "mcp__github__gh_issue_view",
+      "mcp__github__gh_issue_create",
+      "mcp__github__gh_issue_close",
+      "mcp__github__gh_repo_view",
+      "mcp__github__gh_repo_list",
+      
+      "mcp__github__gh_auth_login",
+      "mcp__github__gh_auth_logout",
+      "mcp__github__gh_auth_status",
+      "mcp__github__gh_auth_refresh",
+      
+      "mcp__github__gh_gist_create",
+      "mcp__github__gh_gist_edit",
+      "mcp__github__gh_gist_list",
+      "mcp__github__gh_gist_view",
+      "mcp__github__gh_gist_delete",
+      
+      "mcp__github__gh_release_create",
+      "mcp__github__gh_release_delete",
+      "mcp__github__gh_release_download",
+      "mcp__github__gh_release_list",
+      "mcp__github__gh_release_upload",
+      "mcp__github__gh_release_view",
+      
+      "mcp__github__gh_project_create",
+      "mcp__github__gh_project_delete",
+      "mcp__github__gh_project_list",
+      "mcp__github__gh_project_view",
+      
+      "mcp__github__gh_workflow_disable",
+      "mcp__github__gh_workflow_enable",
+      "mcp__github__gh_workflow_list",
+      "mcp__github__gh_workflow_run",
+      "mcp__github__gh_workflow_view",
+      
+      "mcp__github__gh_search_repos",
+      "mcp__github__gh_search_issues",
+      "mcp__github__gh_search_prs",
+      "mcp__github__gh_search_code",
+      
+      "mcp__github__gh_api_call",
+      "mcp__github__gh_api_graphql",
+      
+      "mcp__github__gh_secret_list",
+      "mcp__github__gh_secret_set",
+      "mcp__github__gh_secret_delete",
+      
+      "mcp__github__gh_label_create",
+      "mcp__github__gh_label_delete",
+      "mcp__github__gh_label_list",
+      
+      "mcp__github__gh_alias_set",
+      "mcp__github__gh_alias_list",
+      "mcp__github__gh_alias_delete",
+      
+      "mcp__github__gh_config_get",
+      "mcp__github__gh_config_set",
+      "mcp__github__gh_config_list"
+    ],
+    "deny": []
+  }
+}

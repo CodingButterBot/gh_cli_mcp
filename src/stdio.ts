@@ -9,7 +9,7 @@ export class Tool<T extends z.ZodTypeAny> {
   constructor(
     public name: string,
     public schema: T,
-    public handler: (params: z.infer<T>) => Promise<{
+    public handler: (params: z.infer<T>, sessionId?: string) => Promise<{
       content: Array<{ type: string; text: string }>;
     }>,
     public options: {
@@ -17,13 +17,14 @@ export class Tool<T extends z.ZodTypeAny> {
     }
   ) {}
 
-  definition(): [string, z.ZodTypeAny, (params: any) => Promise<any>, { description: string }] {
+  definition(): [string, z.ZodTypeAny, (params: any, sessionId?: string) => Promise<any>, { description: string }] {
     return [this.name, this.schema, this.handler, this.options];
   }
 }
 
 /**
  * MCP Server for GitHub CLI tools
+ * @deprecated Use GitHubCliServer from server.ts instead for multi-client support
  */
 export class GitHubCliServer extends BaseMcpServer {
   private toolsList: Tool<any>[] = [];
@@ -35,13 +36,14 @@ export class GitHubCliServer extends BaseMcpServer {
   constructor() {
     const config = {
       name: 'GitHub CLI MCP Server',
-      version: '1.0.2',
+      version: '1.1.0',
       description: 'GitHub CLI commands via Model Context Protocol',
       homepage: 'https://github.com/yourusername/gh-cli-mcp',
       license: 'MIT'
     };
     super(config);
     this.config = config;
+    console.warn('WARNING: This class is deprecated. Use GitHubCliServer from server.ts instead for multi-client support.');
   }
 
   /**
@@ -50,7 +52,7 @@ export class GitHubCliServer extends BaseMcpServer {
   addTool<T extends z.ZodTypeAny>(
     name: string,
     schema: T,
-    handler: (params: z.infer<T>) => Promise<{
+    handler: (params: z.infer<T>, sessionId?: string) => Promise<{
       content: Array<{ type: string; text: string }>;
     }>,
     options: {
@@ -60,9 +62,16 @@ export class GitHubCliServer extends BaseMcpServer {
     const tool = new Tool(name, schema, handler, options);
     this.toolsList.push(tool);
     
+    // Create a wrapper handler that passes the sessionId to the original handler
+    const wrappedHandler = async (params: any, requestInfo: any) => {
+      // Extract sessionId from requestInfo if available
+      const sessionId = requestInfo?.sessionId;
+      return await handler(params, sessionId);
+    };
+    
     // Register with MCP server
-    const [toolName, toolSchema, toolHandler, toolOptions] = tool.definition();
-    super.tool(toolName, JSON.stringify(toolOptions), (toolSchema as any)?._def?.shape || toolSchema, toolHandler);
+    const [toolName, toolSchema, , toolOptions] = tool.definition();
+    super.tool(toolName, JSON.stringify(toolOptions), (toolSchema as any)?._def?.shape || toolSchema, wrappedHandler);
     
     return this;
   }

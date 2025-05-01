@@ -1,0 +1,28 @@
+{
+  "transport": {
+    "type": "websocket",
+    "options": {
+      "port": 3000,
+      "host": "localhost"
+    }
+  },
+  "sessionTimeout": 1800000,
+  "permissions": {
+    "allow": [
+      "mcp__github__gh_pr_list",
+      "mcp__github__gh_pr_view",
+      "mcp__github__gh_pr_create",
+      "mcp__github__gh_pr_close",
+      "mcp__github__gh_issue_list",
+      "mcp__github__gh_issue_view",
+      "mcp__github__gh_issue_create",
+      "mcp__github__gh_issue_close",
+      "mcp__github__gh_repo_view",
+      "mcp__github__gh_repo_list",
+      "mcp__github__gh_project_create",
+      "mcp__github__gh_project_list",
+      "mcp__github__gh_project_view"
+    ],
+    "deny": []
+  }
+}
