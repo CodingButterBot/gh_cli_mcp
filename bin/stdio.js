@@ -30,7 +30,7 @@ export class GitHubCliServer extends BaseMcpServer {
     constructor() {
         const config = {
             name: 'GitHub CLI MCP Server',
-            version: '1.0.1',
+            version: '1.0.2',
             description: 'GitHub CLI commands via Model Context Protocol',
             homepage: 'https://github.com/yourusername/gh-cli-mcp',
             license: 'MIT'

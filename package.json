@@ -1,6 +1,6 @@
 {
   "name": "gh-cli-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "GitHub CLI MCP server for AI assistants - access GitHub via Model Context Protocol",
   "main": "bin/index.js",
   "type": "module",
