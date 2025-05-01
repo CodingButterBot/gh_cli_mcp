@@ -41,9 +41,9 @@ export interface ServerConfig {
  */
 const DEFAULT_CONFIG: ServerConfig = {
   name: 'GitHub CLI MCP Server',
-  version: '1.0.2',
+  version: '1.1.0',
   description: 'GitHub CLI commands via Model Context Protocol',
-  homepage: 'https://github.com/yourusername/gh-cli-mcp',
+  homepage: 'https://github.com/codingbutter/gh-cli-mcp',
   license: 'MIT',
   transport: {
     type: TransportType.STDIO

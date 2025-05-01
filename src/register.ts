@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { GitHubCliServer, Tool } from './stdio.js';
+import { Tool } from './stdio.js';
+// Define a generic interface for any server that can add tools
+export interface ToolCapableServer {
+  addTool: <T extends z.ZodTypeAny>(
+    name: string,
+    schema: T,
+    handler: (params: any, sessionId?: string) => Promise<any>,
+    options: { description: string }
+  ) => any;
+}
 import { GithubCliTools } from './types/github.js';
 
 /**
@@ -54,7 +63,7 @@ export const issueParamsSchema = commonResourceParamsSchema.merge(filterParamsSc
  * @param server GitHub CLI MCP server
  * @param tools GitHub CLI tools organized by category
  */
-export function registerTools(server: GitHubCliServer, tools: GithubCliTools): void {
+export function registerTools(server: ToolCapableServer, tools: GithubCliTools): void {
   // Register tool categories
   Object.entries(tools).forEach(([category, categoryTools]) => {
     if (!categoryTools) return;
@@ -85,7 +94,7 @@ export function registerTools(server: GitHubCliServer, tools: GithubCliTools): v
  * @param server GitHub CLI MCP server
  * @param tools Array of Tool instances
  */
-export function registerToolsList(server: GitHubCliServer, tools: Tool<any>[]): void {
+export function registerToolsList(server: ToolCapableServer, tools: Tool<any>[]): void {
   tools.forEach(tool => {
     server.addTool(
       tool.name,

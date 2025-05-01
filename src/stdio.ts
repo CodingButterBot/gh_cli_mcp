@@ -38,7 +38,7 @@ export class GitHubCliServer extends BaseMcpServer {
       name: 'GitHub CLI MCP Server',
       version: '1.1.0',
       description: 'GitHub CLI commands via Model Context Protocol',
-      homepage: 'https://github.com/yourusername/gh-cli-mcp',
+      homepage: 'https://github.com/codingbutter/gh-cli-mcp',
       license: 'MIT'
     };
     super(config);
@@ -63,10 +63,25 @@ export class GitHubCliServer extends BaseMcpServer {
     this.toolsList.push(tool);
     
     // Create a wrapper handler that passes the sessionId to the original handler
-    const wrappedHandler = async (params: any, requestInfo: any) => {
-      // Extract sessionId from requestInfo if available
-      const sessionId = requestInfo?.sessionId;
-      return await handler(params, sessionId);
+    const wrappedHandler = async (extra: any) => {
+      // Extract sessionId and params from extra if available
+      const sessionId = extra?.sessionId;
+      const params = extra?.params || {};
+      
+      // Call the original handler
+      const result = await handler(params, sessionId);
+      
+      // Return in the format expected by the MCP SDK
+      return {
+        content: result.content.map(item => {
+          if (item.type === 'text') {
+            return { type: 'text', text: item.text };
+          }
+          // Handle other types if needed
+          return item;
+        }),
+        _meta: extra?._meta
+      };
     };
     
     // Register with MCP server
