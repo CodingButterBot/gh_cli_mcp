@@ -1,160 +1,168 @@
 # GitHub CLI MCP Server
 
-This is a Model Context Protocol (MCP) server that wraps around the GitHub CLI (`gh`) tool, allowing AI assistants to interact with GitHub repositories through the MCP interface.
+<div align="center">
+  <img src="https://cli.github.com/assets/images/logo-black-88f33c5b.svg" alt="GitHub CLI Logo" width="100" height="100">
+  <p><em>Use GitHub CLI commands directly from Claude and other AI assistants</em></p>
+</div>
 
-## Features
+This Model Context Protocol (MCP) server wraps the GitHub CLI (`gh`) tool, enabling AI assistants to interact with GitHub repositories through standardized tools.
 
-- Provides MCP-compatible API for GitHub CLI commands
-- Supports pull request operations (list, view, create, close)
-- Supports issue operations (list, view, create, close)
-- Supports repository operations (view, list)
-- Validates input parameters using Zod schemas
-- Uses Node.js standard libraries for execution
-- Can be installed globally or run with npx
+## ✨ Features
 
-## Prerequisites
+- **Complete GitHub CLI Integration** - Access GitHub from any MCP-compatible AI assistant
+- **Pull Request Management** - List, view, create, and close PRs
+- **Issue Tracking** - Create, view, and manage issues
+- **Repository Operations** - View and list repository information
+- **Secure by Design** - Uses your existing GitHub CLI authentication
+- **Easy Setup** - Works with npx or global installation
 
-Before using this server, you need to have the following installed:
+## 📋 Prerequisites
 
-1. [Node.js](https://nodejs.org/) (v16 or later)
-2. [GitHub CLI](https://cli.github.com/) (installed and authenticated)
+- [**Node.js**](https://nodejs.org/) v18 or later
+- [**GitHub CLI**](https://cli.github.com/) installed and authenticated with `gh auth login`
 
-## Installation & Usage
+## 🚀 Installation
 
-### Running with npx (Recommended)
-
-The simplest way to use this tool is with npx, which doesn't require installation:
+### Option 1: Run with npx (No Installation Required)
 
 ```bash
-# Start the MCP server
+# Start the MCP server directly
 npx gh-cli-mcp
-
-# Show help
-npx gh-cli-mcp --help
-
-# Show version
-npx gh-cli-mcp --version
 ```
 
-### Global Installation
-
-If you prefer, you can install the tool globally:
+### Option 2: Global Installation
 
 ```bash
 # Install globally
 npm install -g gh-cli-mcp
 
-# Then run from anywhere
+# Run from anywhere
 gh-cli-mcp
 ```
 
-### Local Development
+### Verify Installation
 
-If you want to contribute or modify the code:
+The server should start and display:
+```
+MCP Server running on [port]
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/gh-cli-mcp.git
-   cd gh-cli-mcp
-   ```
+## ⚙️ Configuration
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Claude Desktop / Claude Code
 
-3. Build the TypeScript code:
-   ```bash
-   npm run build
-   ```
-
-4. Run the server:
-   ```bash
-   npm start
-   ```
-
-5. For development with auto-rebuild:
-   ```bash
-   npm run dev
-   ```
-
-## Configuring with Claude or other MCP clients
-
-This server is listed in the `.mcp.json` configuration file under the name `github`. You can use it with Claude or other MCP-compatible clients by referring to tools like:
-
-- `mcp__github__gh_pr_list`
-- `mcp__github__gh_issue_list`
-- `mcp__github__gh_repo_view`
-
-To configure the server in your own `.mcp.json` file, add:
+Add the following to your `.mcp.json` file:
 
 ```json
-"github": {
-  "type": "stdio",
-  "command": "npx",
-  "args": [
-    "gh-cli-mcp"
-  ],
-  "env": {}
+{
+  "github": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["gh-cli-mcp"],
+    "env": {}
+  }
 }
 ```
 
-## Available Tools
+### VS Code / Cursor
+
+In your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["gh-cli-mcp"],
+      "env": {}
+    }
+  }
+}
+```
+
+## 🛠️ Available Tools
 
 ### Pull Requests
 
-- `gh_pr_list`: List pull requests in a repository
-- `gh_pr_view`: View a pull request
-- `gh_pr_create`: Create a new pull request
-- `gh_pr_close`: Close a pull request
+| Tool | Description | Example Usage |
+|------|-------------|--------------|
+| `gh_pr_list` | List pull requests | "List open pull requests" |
+| `gh_pr_view` | View PR details | "Show me PR #123" |
+| `gh_pr_create` | Create a new PR | "Create a PR from my current branch" |
+| `gh_pr_close` | Close a PR | "Close pull request #123" |
 
 ### Issues
 
-- `gh_issue_list`: List issues in a repository
-- `gh_issue_view`: View an issue
-- `gh_issue_create`: Create a new issue
-- `gh_issue_close`: Close an issue
+| Tool | Description | Example Usage |
+|------|-------------|--------------|
+| `gh_issue_list` | List issues | "Show open issues with label 'bug'" |
+| `gh_issue_view` | View issue details | "Look at issue #45" |
+| `gh_issue_create` | Create a new issue | "Create an issue about the login bug" |
+| `gh_issue_close` | Close an issue | "Close issue #45" |
 
 ### Repositories
 
-- `gh_repo_view`: View a repository
-- `gh_repo_list`: List repositories
+| Tool | Description | Example Usage |
+|------|-------------|--------------|
+| `gh_repo_view` | View repo details | "Show info about this repository" |
+| `gh_repo_list` | List repositories | "List my repositories" |
 
-## Development
+## 🧩 Using with Claude or Other AI Assistants
 
-### Project Structure
+When properly configured, you can use commands like:
 
-- `bin/`: Contains the built JavaScript files and CLI entry point
-- `src/`: Contains the TypeScript source files
-  - `index.ts`: Main implementation entry point
-  - `stdio.ts`: MCP server implementation
-  - `register.ts`: Tool registration and schema definitions
-  - `github.ts`: GitHub CLI execution functions
-  - `tools.ts`: Tool definitions
-  - `types/github.ts`: TypeScript interfaces
+```
+Can you list my open pull requests?
+Show me the details of issue #42
+Create a new issue for the login bug
+```
 
-### Adding New Tools
+The AI will use the appropriate GitHub CLI MCP tools to complete these tasks.
 
-To add a new GitHub CLI command as a tool:
+## 🔍 Troubleshooting
 
-1. Define a Zod schema for the command parameters in `register.ts`
-2. Create a new tool in `tools.ts` using the `Tool` class
-3. Add the tool to the appropriate category or to `allTools`
+### Common Issues
 
-### Publishing to NPM
+- **Authentication errors**: Run `gh auth login` to ensure you're logged in
+- **Command not found**: Ensure GitHub CLI is installed and in your PATH
+- **Connection errors**: Check your internet connection and GitHub status
 
-To publish this package to npm:
+## 👨‍💻 Development
 
-1. Update version in package.json
-2. Build the TypeScript code:
-   ```bash
-   npm run build
-   ```
-3. Publish to npm:
-   ```bash
-   npm publish
-   ```
+### Local Development Setup
 
-## License
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/gh-cli-mcp.git
+cd gh-cli-mcp
+
+# Install dependencies
+npm install
+
+# Start development server with auto-reload
+npm run dev
+```
+
+### Adding New GitHub CLI Commands
+
+1. Define parameter schema in `register.ts`
+2. Implement command handler in `github.ts`
+3. Add the tool to `tools.ts`
+
+### Publishing Updates
+
+```bash
+# Update version in package.json
+npm run build
+npm publish
+```
+
+## 📄 License
 
 MIT
+
+---
+
+<div align="center">
+  <p>Made with ❤️ for AI assistants and GitHub users</p>
+</div>

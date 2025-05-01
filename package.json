@@ -1,11 +1,11 @@
 {
   "name": "gh-cli-mcp",
-  "version": "1.0.0",
-  "description": "GitHub CLI MCP server for Model Context Protocol",
+  "version": "1.0.1",
+  "description": "GitHub CLI MCP server for AI assistants - access GitHub via Model Context Protocol",
   "main": "bin/index.js",
   "type": "module",
   "bin": {
-    "gh-cli-mcp": "./bin/gh-mcp.js"
+    "gh-cli-mcp": "bin/gh-mcp.js"
   },
   "scripts": {
     "build": "tsc",

@@ -4,7 +4,7 @@ import { registerToolsList } from './register.js';
 import { allTools } from './tools.js';
 import { checkGitHubCli } from './github.js';
 // Package version from package.json
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 /**
  * Display help information
  */

@@ -16,13 +16,6 @@
         "serve"
       ]
     },
-    "puppeteer": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-puppeteer"
-      ]
-    },
     "smtp_gmail": {
       "type": "stdio",
       "command": "npx",
