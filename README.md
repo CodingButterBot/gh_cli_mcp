@@ -1,7 +1,7 @@
 # GitHub CLI MCP Server
 
 <div align="center">
-  <img src="https://cli.github.com/assets/images/logo-black-88f33c5b.svg" alt="GitHub CLI Logo" width="100" height="100">
+  <img src="./gh-cli-mcp.png" alt="GitHub CLI MCP Logo" width="100%">
   <p><em>Use GitHub CLI commands directly from Claude and other AI assistants</em></p>
 </div>
 
