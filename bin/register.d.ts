@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { GitHubCliServer, Tool } from './stdio.js';
+import { Tool } from './stdio.js';
+export interface ToolCapableServer {
+    addTool: <T extends z.ZodTypeAny>(name: string, schema: T, handler: (params: any, sessionId?: string) => Promise<any>, options: {
+        description: string;
+    }) => any;
+}
 import { GithubCliTools } from './types/github.js';
 /**
  * ZodSchema for base GitHub parameters
@@ -170,11 +175,11 @@ export declare const issueParamsSchema: z.ZodObject<{
  * @param server GitHub CLI MCP server
  * @param tools GitHub CLI tools organized by category
  */
-export declare function registerTools(server: GitHubCliServer, tools: GithubCliTools): void;
+export declare function registerTools(server: ToolCapableServer, tools: GithubCliTools): void;
 /**
  * Register tools directly using Tool class instances
  * @param server GitHub CLI MCP server
  * @param tools Array of Tool instances
  */
-export declare function registerToolsList(server: GitHubCliServer, tools: Tool<any>[]): void;
+export declare function registerToolsList(server: ToolCapableServer, tools: Tool<any>[]): void;
 //# sourceMappingURL=register.d.ts.map

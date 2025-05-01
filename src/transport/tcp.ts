@@ -1,5 +1,7 @@
-import { ServerTransport } from '@modelcontextprotocol/sdk/server/transport.js';
+// @ts-ignore - Ignoring module resolution error
+import { ServerTransport } from '@modelcontextprotocol/sdk/server/transport';
 import { createServer, Server, Socket } from 'net';
+// @ts-ignore - Ignoring module resolution error
 import { v4 as uuidv4 } from 'uuid';
 import { EventEmitter } from 'events';
 

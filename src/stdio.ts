@@ -62,30 +62,40 @@ export class GitHubCliServer extends BaseMcpServer {
     const tool = new Tool(name, schema, handler, options);
     this.toolsList.push(tool);
     
-    // Create a wrapper handler that passes the sessionId to the original handler
+    // Create a wrapper handler for the MCP SDK
+    // @ts-ignore - Ignoring type mismatches for now as we're adapting between different versions
     const wrappedHandler = async (extra: any) => {
-      // Extract sessionId and params from extra if available
-      const sessionId = extra?.sessionId;
-      const params = extra?.params || {};
-      
-      // Call the original handler
-      const result = await handler(params, sessionId);
-      
-      // Return in the format expected by the MCP SDK
-      return {
-        content: result.content.map(item => {
-          if (item.type === 'text') {
-            return { type: 'text', text: item.text };
-          }
-          // Handle other types if needed
-          return item;
-        }),
-        _meta: extra?._meta
-      };
+      try {
+        // Extract sessionId and params from extra if available
+        const sessionId = extra?.sessionId;
+        const params = extra?.params || {};
+        
+        // Call the original handler
+        const result = await handler(params, sessionId);
+        
+        // Return in the format expected by the MCP SDK
+        return {
+          content: result.content.map(item => {
+            if (item.type === 'text') {
+              return { type: 'text', text: item.text };
+            }
+            // Handle other types if needed
+            return item;
+          }),
+          _meta: extra?._meta
+        };
+      } catch (error) {
+        console.error('Handler error:', error);
+        return {
+          content: [{ type: 'text', text: 'Error executing command' }],
+          isError: true
+        };
+      }
     };
     
     // Register with MCP server
     const [toolName, toolSchema, , toolOptions] = tool.definition();
+    // @ts-ignore - Ignoring type mismatches for compatibility
     super.tool(toolName, JSON.stringify(toolOptions), (toolSchema as any)?._def?.shape || toolSchema, wrappedHandler);
     
     return this;

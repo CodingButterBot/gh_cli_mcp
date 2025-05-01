@@ -256,6 +256,203 @@ export declare const repoTools: {
     }>>;
 };
 /**
+ * Project Tools
+ */
+export declare const projectTools: {
+    view: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        number: z.ZodNumber;
+        web: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        number: number;
+        repo?: string | undefined;
+        web?: boolean | undefined;
+    }, {
+        number: number;
+        repo?: string | undefined;
+        web?: boolean | undefined;
+    }>>;
+    list: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        limit: z.ZodOptional<z.ZodNumber>;
+        format: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        repo?: string | undefined;
+        limit?: number | undefined;
+        format?: string | undefined;
+    }, {
+        repo?: string | undefined;
+        limit?: number | undefined;
+        format?: string | undefined;
+    }>>;
+    create: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        title: z.ZodString;
+        body: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        title: string;
+        repo?: string | undefined;
+        body?: string | undefined;
+    }, {
+        title: string;
+        repo?: string | undefined;
+        body?: string | undefined;
+    }>>;
+    edit: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        number: z.ZodNumber;
+        title: z.ZodOptional<z.ZodString>;
+        body: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        number: number;
+        repo?: string | undefined;
+        title?: string | undefined;
+        body?: string | undefined;
+    }, {
+        number: number;
+        repo?: string | undefined;
+        title?: string | undefined;
+        body?: string | undefined;
+    }>>;
+};
+/**
+ * Workflow Tools
+ */
+export declare const workflowTools: {
+    list: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        all: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        repo?: string | undefined;
+        all?: boolean | undefined;
+    }, {
+        repo?: string | undefined;
+        all?: boolean | undefined;
+    }>>;
+    view: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        name: z.ZodString;
+        yaml: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        repo?: string | undefined;
+        yaml?: boolean | undefined;
+    }, {
+        name: string;
+        repo?: string | undefined;
+        yaml?: boolean | undefined;
+    }>>;
+    run: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        name: z.ZodString;
+        ref: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        repo?: string | undefined;
+        ref?: string | undefined;
+    }, {
+        name: string;
+        repo?: string | undefined;
+        ref?: string | undefined;
+    }>>;
+    disable: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        name: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        repo?: string | undefined;
+    }, {
+        name: string;
+        repo?: string | undefined;
+    }>>;
+    enable: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        name: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        repo?: string | undefined;
+    }, {
+        name: string;
+        repo?: string | undefined;
+    }>>;
+};
+/**
+ * Release Tools
+ */
+export declare const releaseTools: {
+    list: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        limit: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        repo?: string | undefined;
+        limit?: number | undefined;
+    }, {
+        repo?: string | undefined;
+        limit?: number | undefined;
+    }>>;
+    view: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        tag: z.ZodOptional<z.ZodString>;
+        web: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        repo?: string | undefined;
+        web?: boolean | undefined;
+        tag?: string | undefined;
+    }, {
+        repo?: string | undefined;
+        web?: boolean | undefined;
+        tag?: string | undefined;
+    }>>;
+    create: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        tag: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        notes: z.ZodOptional<z.ZodString>;
+        draft: z.ZodOptional<z.ZodBoolean>;
+        prerelease: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        tag: string;
+        repo?: string | undefined;
+        title?: string | undefined;
+        draft?: boolean | undefined;
+        notes?: string | undefined;
+        prerelease?: boolean | undefined;
+    }, {
+        tag: string;
+        repo?: string | undefined;
+        title?: string | undefined;
+        draft?: boolean | undefined;
+        notes?: string | undefined;
+        prerelease?: boolean | undefined;
+    }>>;
+    delete: Tool<z.ZodObject<{
+        repo: z.ZodOptional<z.ZodString>;
+    } & {
+        tag: z.ZodString;
+        yes: z.ZodOptional<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        tag: string;
+        repo?: string | undefined;
+        yes?: boolean | undefined;
+    }, {
+        tag: string;
+        repo?: string | undefined;
+        yes?: boolean | undefined;
+    }>>;
+};
+/**
  * All GitHub CLI tools
  */
 export declare const allTools: (Tool<z.ZodObject<{
@@ -447,5 +644,164 @@ export declare const allTools: (Tool<z.ZodObject<{
     owner?: string | undefined;
     language?: string | undefined;
     visibility?: "public" | "private" | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    number: z.ZodNumber;
+    web: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    number: number;
+    repo?: string | undefined;
+    web?: boolean | undefined;
+}, {
+    number: number;
+    repo?: string | undefined;
+    web?: boolean | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    limit: z.ZodOptional<z.ZodNumber>;
+    format: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    repo?: string | undefined;
+    limit?: number | undefined;
+    format?: string | undefined;
+}, {
+    repo?: string | undefined;
+    limit?: number | undefined;
+    format?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    title: z.ZodString;
+    body: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    repo?: string | undefined;
+    body?: string | undefined;
+}, {
+    title: string;
+    repo?: string | undefined;
+    body?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    number: z.ZodNumber;
+    title: z.ZodOptional<z.ZodString>;
+    body: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    number: number;
+    repo?: string | undefined;
+    title?: string | undefined;
+    body?: string | undefined;
+}, {
+    number: number;
+    repo?: string | undefined;
+    title?: string | undefined;
+    body?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    all: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    repo?: string | undefined;
+    all?: boolean | undefined;
+}, {
+    repo?: string | undefined;
+    all?: boolean | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    name: z.ZodString;
+    yaml: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    repo?: string | undefined;
+    yaml?: boolean | undefined;
+}, {
+    name: string;
+    repo?: string | undefined;
+    yaml?: boolean | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    name: z.ZodString;
+    ref: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    repo?: string | undefined;
+    ref?: string | undefined;
+}, {
+    name: string;
+    repo?: string | undefined;
+    ref?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    name: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    repo?: string | undefined;
+}, {
+    name: string;
+    repo?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    limit: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    repo?: string | undefined;
+    limit?: number | undefined;
+}, {
+    repo?: string | undefined;
+    limit?: number | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    tag: z.ZodOptional<z.ZodString>;
+    web: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    repo?: string | undefined;
+    web?: boolean | undefined;
+    tag?: string | undefined;
+}, {
+    repo?: string | undefined;
+    web?: boolean | undefined;
+    tag?: string | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    tag: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    notes: z.ZodOptional<z.ZodString>;
+    draft: z.ZodOptional<z.ZodBoolean>;
+    prerelease: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    tag: string;
+    repo?: string | undefined;
+    title?: string | undefined;
+    draft?: boolean | undefined;
+    notes?: string | undefined;
+    prerelease?: boolean | undefined;
+}, {
+    tag: string;
+    repo?: string | undefined;
+    title?: string | undefined;
+    draft?: boolean | undefined;
+    notes?: string | undefined;
+    prerelease?: boolean | undefined;
+}>> | Tool<z.ZodObject<{
+    repo: z.ZodOptional<z.ZodString>;
+} & {
+    tag: z.ZodString;
+    yes: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    tag: string;
+    repo?: string | undefined;
+    yes?: boolean | undefined;
+}, {
+    tag: string;
+    repo?: string | undefined;
+    yes?: boolean | undefined;
 }>>)[];
 //# sourceMappingURL=tools.d.ts.map

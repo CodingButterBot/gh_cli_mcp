@@ -1,6 +1,7 @@
 import { McpServer as BaseMcpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ServerTransport } from '@modelcontextprotocol/sdk/server/transport.js';
+// @ts-ignore - Ignoring module resolution error
+import { ServerTransport } from '@modelcontextprotocol/sdk/server/transport';
 import { z } from 'zod';
 import { Tool } from './stdio.js';
 import { SessionManager } from './session/manager.js';

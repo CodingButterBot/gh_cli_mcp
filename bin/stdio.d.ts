@@ -6,7 +6,7 @@ import { McpServer as BaseMcpServer } from '@modelcontextprotocol/sdk/server/mcp
 export declare class Tool<T extends z.ZodTypeAny> {
     name: string;
     schema: T;
-    handler: (params: z.infer<T>) => Promise<{
+    handler: (params: z.infer<T>, sessionId?: string) => Promise<{
         content: Array<{
             type: string;
             text: string;
@@ -15,7 +15,7 @@ export declare class Tool<T extends z.ZodTypeAny> {
     options: {
         description: string;
     };
-    constructor(name: string, schema: T, handler: (params: z.infer<T>) => Promise<{
+    constructor(name: string, schema: T, handler: (params: z.infer<T>, sessionId?: string) => Promise<{
         content: Array<{
             type: string;
             text: string;
@@ -23,12 +23,13 @@ export declare class Tool<T extends z.ZodTypeAny> {
     }>, options: {
         description: string;
     });
-    definition(): [string, z.ZodTypeAny, (params: any) => Promise<any>, {
+    definition(): [string, z.ZodTypeAny, (params: any, sessionId?: string) => Promise<any>, {
         description: string;
     }];
 }
 /**
  * MCP Server for GitHub CLI tools
+ * @deprecated Use GitHubCliServer from server.ts instead for multi-client support
  */
 export declare class GitHubCliServer extends BaseMcpServer {
     private toolsList;
@@ -40,7 +41,7 @@ export declare class GitHubCliServer extends BaseMcpServer {
     /**
      * Add a tool with the given name, schema, handler, and options
      */
-    addTool<T extends z.ZodTypeAny>(name: string, schema: T, handler: (params: z.infer<T>) => Promise<{
+    addTool<T extends z.ZodTypeAny>(name: string, schema: T, handler: (params: z.infer<T>, sessionId?: string) => Promise<{
         content: Array<{
             type: string;
             text: string;

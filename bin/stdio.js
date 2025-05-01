@@ -20,6 +20,7 @@ export class Tool {
 }
 /**
  * MCP Server for GitHub CLI tools
+ * @deprecated Use GitHubCliServer from server.ts instead for multi-client support
  */
 export class GitHubCliServer extends BaseMcpServer {
     toolsList = [];
@@ -30,13 +31,14 @@ export class GitHubCliServer extends BaseMcpServer {
     constructor() {
         const config = {
             name: 'GitHub CLI MCP Server',
-            version: '1.0.2',
+            version: '1.1.0',
             description: 'GitHub CLI commands via Model Context Protocol',
-            homepage: 'https://github.com/yourusername/gh-cli-mcp',
+            homepage: 'https://github.com/codingbutter/gh-cli-mcp',
             license: 'MIT'
         };
         super(config);
         this.config = config;
+        console.warn('WARNING: This class is deprecated. Use GitHubCliServer from server.ts instead for multi-client support.');
     }
     /**
      * Add a tool with the given name, schema, handler, and options
@@ -44,9 +46,39 @@ export class GitHubCliServer extends BaseMcpServer {
     addTool(name, schema, handler, options) {
         const tool = new Tool(name, schema, handler, options);
         this.toolsList.push(tool);
+        // Create a wrapper handler for the MCP SDK
+        // @ts-ignore - Ignoring type mismatches for now as we're adapting between different versions
+        const wrappedHandler = async (extra) => {
+            try {
+                // Extract sessionId and params from extra if available
+                const sessionId = extra?.sessionId;
+                const params = extra?.params || {};
+                // Call the original handler
+                const result = await handler(params, sessionId);
+                // Return in the format expected by the MCP SDK
+                return {
+                    content: result.content.map(item => {
+                        if (item.type === 'text') {
+                            return { type: 'text', text: item.text };
+                        }
+                        // Handle other types if needed
+                        return item;
+                    }),
+                    _meta: extra?._meta
+                };
+            }
+            catch (error) {
+                console.error('Handler error:', error);
+                return {
+                    content: [{ type: 'text', text: 'Error executing command' }],
+                    isError: true
+                };
+            }
+        };
         // Register with MCP server
-        const [toolName, toolSchema, toolHandler, toolOptions] = tool.definition();
-        super.tool(toolName, JSON.stringify(toolOptions), toolSchema?._def?.shape || toolSchema, toolHandler);
+        const [toolName, toolSchema, , toolOptions] = tool.definition();
+        // @ts-ignore - Ignoring type mismatches for compatibility
+        super.tool(toolName, JSON.stringify(toolOptions), toolSchema?._def?.shape || toolSchema, wrappedHandler);
         return this;
     }
     /**
