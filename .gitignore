@@ -1,1 +1,19 @@
+# Local configuration files
+**/.claude/
 **/.claude/settings.local.json
+.mcp.json
+
+# Build output
+node_modules/
+dist/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
