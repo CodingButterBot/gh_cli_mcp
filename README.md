@@ -107,6 +107,65 @@ In your MCP configuration:
 | `gh_repo_view` | View repo details | "Show info about this repository" |
 | `gh_repo_list` | List repositories | "List my repositories" |
 
+## 🔑 Tool Permissions
+
+To allow Claude to use GitHub CLI tools, you need to update Claude's tool permissions. Create a `.claude/settings.local.json` file in your project directory with the GitHub CLI tools you want to enable.
+
+### Setup Instructions:
+
+1. Copy the example file from the repository:
+   ```bash
+   cp settings.local.example.json .claude/settings.local.json
+   ```
+   
+2. If the `.claude` directory doesn't exist, create it first:
+   ```bash
+   mkdir -p .claude
+   ```
+
+3. Edit the permissions in `.claude/settings.local.json` to include the specific GitHub CLI tools you want to use.
+
+Basic example with core functionality:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "mcp__github__gh_pr_list",
+      "mcp__github__gh_pr_view",
+      "mcp__github__gh_pr_create",
+      "mcp__github__gh_pr_close",
+      "mcp__github__gh_issue_list",
+      "mcp__github__gh_issue_view",
+      "mcp__github__gh_issue_create",
+      "mcp__github__gh_issue_close",
+      "mcp__github__gh_repo_view",
+      "mcp__github__gh_repo_list"
+    ],
+    "deny": []
+  }
+}
+```
+
+The example file `settings.local.example.json` in the repository root includes a comprehensive list of all available GitHub CLI tool permissions. This includes permissions for:
+
+- Pull request operations
+- Issue management
+- Repository viewing and listing
+- Authentication control
+- Gist management
+- Release management
+- Project management
+- Workflow operations
+- Search capabilities
+- API access
+- Secret management
+- Label operations
+- Alias management
+- Configuration settings
+
+You can customize this file to include only the specific GitHub CLI tool permissions you need.
+
 ## 🧩 Using with Claude or Other AI Assistants
 
 When properly configured, you can use commands like:
