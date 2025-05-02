@@ -92,7 +92,7 @@ export class GitHubCliServer extends BaseMcpServer {
     this.toolsList.push(tool);
     
     // Create a wrapper handler for the MCP SDK
-    // @ts-ignore - Ignoring type mismatches for now as we're adapting between different versions
+    // @ts-expect-error - Type mismatches as we're adapting between different versions
     const wrappedHandler = async (extra: any) => {
       try {
         // Extract sessionId and params from extra if available
@@ -124,7 +124,7 @@ export class GitHubCliServer extends BaseMcpServer {
     
     // Register with MCP server
     const [toolName, toolSchema, , toolOptions] = tool.definition();
-    // @ts-ignore - Ignoring type mismatches for compatibility
+    // @ts-expect-error - Type mismatches for compatibility reasons
     super.tool(toolName, JSON.stringify(toolOptions), (toolSchema as any)?._def?.shape || toolSchema, wrappedHandler);
     
     return this;

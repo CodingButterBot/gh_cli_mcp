@@ -51,7 +51,7 @@ export class GitHubCliServer extends BaseMcpServer {
     super(mergedConfig);
     this.config = mergedConfig;
     
-    console.error(`[Server] Created GitHub CLI MCP Server`);
+    console.error('[Server] Created GitHub CLI MCP Server');
   }
 
   /**
