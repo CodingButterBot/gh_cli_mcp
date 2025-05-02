@@ -38,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/CodingButterBot/gh_cli_mcp/issues"
   },
-  "homepage": "https://github.com/CodingButterBot/gh_cli_mcp#readme",
+  "homepage": "https://codingbutterbot.github.io/gh_cli_mcp/",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
