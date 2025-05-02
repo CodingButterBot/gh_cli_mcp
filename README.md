@@ -3,7 +3,7 @@
 <div align="center">
   <img src="./gh-cli-mcp.png" alt="GitHub CLI MCP Logo" width="100%">
   <p><em>Use GitHub CLI commands directly from Claude and other AI assistants</em></p>
-  <p><a href="https://github.com/CodingButterBot/gh_cli_mcp/tree/wiki/docs">📚 Documentation</a></p>
+  <p><a href="https://github.com/CodingButterBot/gh_cli_mcp/wiki">📚 Documentation</a></p>
 </div>
 
 This Model Context Protocol (MCP) server wraps the GitHub CLI (`gh`) tool, enabling AI assistants to interact with GitHub repositories through standardized tools.
