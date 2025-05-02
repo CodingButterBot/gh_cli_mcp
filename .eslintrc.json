@@ -23,8 +23,8 @@
     "semi": ["error", "always"],
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
   },
-  "ignorePatterns": ["bin", "node_modules", "*.js"]
+  "ignorePatterns": ["bin", "dist", "node_modules", "*.js"]
 }

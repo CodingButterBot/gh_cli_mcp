@@ -64,7 +64,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "gh-cli-mcp.config.example.json"
   ],
   "types": "dist/index.d.ts"
 }
