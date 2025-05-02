@@ -2,14 +2,6 @@ import { McpServer as BaseMcpServer } from '@modelcontextprotocol/sdk/server/mcp
 import { z } from 'zod';
 import { Tool } from './stdio.js';
 /**
- * Transport types supported by the server
- */
-export declare enum TransportType {
-    STDIO = "stdio",
-    WEBSOCKET = "websocket",
-    TCP = "tcp"
-}
-/**
  * Server configuration options
  */
 export interface ServerConfig {
@@ -18,24 +10,14 @@ export interface ServerConfig {
     description: string;
     homepage: string;
     license: string;
-    transport: {
-        type: TransportType;
-        options?: {
-            port?: number;
-            host?: string;
-        };
-    };
     sessionTimeout?: number;
 }
 /**
- * MCP Server for GitHub CLI tools with multi-client support
+ * MCP Server for GitHub CLI tools
  */
 export declare class GitHubCliServer extends BaseMcpServer {
     private toolsList;
     readonly config: ServerConfig;
-    private sessionManager;
-    private transport;
-    private transportEmitter;
     /**
      * Create a new GitHub CLI MCP server
      * @param config Server configuration
@@ -57,11 +39,7 @@ export declare class GitHubCliServer extends BaseMcpServer {
      */
     tools(toolsList: Tool<any>[]): void;
     /**
-     * Create a transport based on configuration
-     */
-    private createTransport;
-    /**
-     * Start the server with the configured transport
+     * Start the server with stdio transport
      */
     start(): Promise<{
         close: () => void;

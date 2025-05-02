@@ -1,5 +1,10 @@
 /**
- * Session manager for tracking client sessions and their state
+ * Simplified session manager for the stdio-only transport
+ * Keeps compatibility with the original API but with simpler implementation
+ */
+
+/**
+ * Session interface
  */
 export interface Session {
   id: string;
@@ -9,70 +14,37 @@ export interface Session {
 }
 
 /**
- * SessionManager - Manages client sessions for the MCP server
+ * SessionManager - Basic session management for the MCP server
  */
 export class SessionManager {
-  private sessions: Map<string, Session> = new Map();
-  private cleanupInterval: NodeJS.Timeout | null = null;
-  private sessionTimeout: number;
+  private session: Session | null = null;
 
   /**
    * Create a new session manager
-   * @param sessionTimeout Milliseconds before inactive sessions are cleaned up (default: 30 minutes)
+   * @param sessionTimeout Not used in stdio-only mode
    */
   constructor(sessionTimeout = 30 * 60 * 1000) {
-    this.sessionTimeout = sessionTimeout;
-    this.startCleanupInterval();
-  }
-
-  /**
-   * Start the cleanup interval to remove expired sessions
-   */
-  private startCleanupInterval(): void {
-    this.cleanupInterval = setInterval(() => this.cleanupSessions(), this.sessionTimeout / 2);
-  }
-
-  /**
-   * Clean up expired sessions
-   */
-  private cleanupSessions(): void {
-    const now = new Date();
-    const expiredSessions: string[] = [];
-    
-    this.sessions.forEach((session, sessionId) => {
-      const elapsed = now.getTime() - session.lastActive.getTime();
-      if (elapsed > this.sessionTimeout) {
-        expiredSessions.push(sessionId);
-      }
-    });
-    
-    expiredSessions.forEach(sessionId => {
-      this.sessions.delete(sessionId);
-      console.error(`[SessionManager] Session expired: ${sessionId}`);
-    });
+    // Create a default session for stdio
+    this.createSession('default');
   }
 
   /**
    * Create a new session
-   * @param sessionId The session ID (optional, will be generated if not provided)
+   * @param sessionId The session ID
    * @param initialData Initial session data
    * @returns The created session
    */
-  createSession(sessionId?: string, initialData: Record<string, unknown> = {}): Session {
-    const id = sessionId || this.generateSessionId();
+  createSession(sessionId: string = 'default', initialData: Record<string, unknown> = {}): Session {
     const now = new Date();
     
-    const session: Session = {
-      id,
+    this.session = {
+      id: sessionId,
       createdAt: now,
       lastActive: now,
       data: { ...initialData }
     };
     
-    this.sessions.set(id, session);
-    console.error(`[SessionManager] Session created: ${id}`);
-    
-    return session;
+    return this.session;
   }
 
   /**
@@ -81,7 +53,10 @@ export class SessionManager {
    * @returns The session or undefined if not found
    */
   getSession(sessionId: string): Session | undefined {
-    return this.sessions.get(sessionId);
+    // In stdio mode, we only have one session
+    return this.session && (sessionId === 'default' || sessionId === this.session.id) 
+      ? this.session 
+      : undefined;
   }
 
   /**
@@ -91,14 +66,14 @@ export class SessionManager {
    * @returns The updated session or undefined if not found
    */
   updateSession(sessionId: string, data: Record<string, unknown>): Session | undefined {
-    const session = this.sessions.get(sessionId);
-    if (!session) return undefined;
+    if (!this.session || (sessionId !== 'default' && sessionId !== this.session.id)) {
+      return undefined;
+    }
     
-    session.lastActive = new Date();
-    session.data = { ...session.data, ...data };
+    this.session.lastActive = new Date();
+    this.session.data = { ...this.session.data, ...data };
     
-    this.sessions.set(sessionId, session);
-    return session;
+    return this.session;
   }
 
   /**
@@ -108,10 +83,11 @@ export class SessionManager {
    * @returns The value or undefined if not found
    */
   getSessionValue<T>(sessionId: string, key: string): T | undefined {
-    const session = this.sessions.get(sessionId);
-    if (!session) return undefined;
+    if (!this.session || (sessionId !== 'default' && sessionId !== this.session.id)) {
+      return undefined;
+    }
     
-    return session.data[key] as T;
+    return this.session.data[key] as T;
   }
 
   /**
@@ -122,13 +98,13 @@ export class SessionManager {
    * @returns True if successful, false if session not found
    */
   setSessionValue<T>(sessionId: string, key: string, value: T): boolean {
-    const session = this.sessions.get(sessionId);
-    if (!session) return false;
+    if (!this.session || (sessionId !== 'default' && sessionId !== this.session.id)) {
+      return false;
+    }
     
-    session.lastActive = new Date();
-    session.data[key] = value;
+    this.session.lastActive = new Date();
+    this.session.data[key] = value;
     
-    this.sessions.set(sessionId, session);
     return true;
   }
 
@@ -138,7 +114,12 @@ export class SessionManager {
    * @returns True if the session was found and deleted
    */
   deleteSession(sessionId: string): boolean {
-    return this.sessions.delete(sessionId);
+    if (!this.session || (sessionId !== 'default' && sessionId !== this.session.id)) {
+      return false;
+    }
+    
+    this.session = null;
+    return true;
   }
 
   /**
@@ -147,31 +128,20 @@ export class SessionManager {
    * @returns True if the session exists and was updated
    */
   touchSession(sessionId: string): boolean {
-    const session = this.sessions.get(sessionId);
-    if (!session) return false;
+    if (!this.session || (sessionId !== 'default' && sessionId !== this.session.id)) {
+      return false;
+    }
     
-    session.lastActive = new Date();
-    this.sessions.set(sessionId, session);
-    
+    this.session.lastActive = new Date();
     return true;
   }
 
   /**
-   * Generate a unique session ID
-   * @returns A unique session ID
-   */
-  private generateSessionId(): string {
-    // Simple implementation, replace with a more robust ID generation in production
-    return Math.random().toString(36).substring(2, 15) + 
-           Math.random().toString(36).substring(2, 15);
-  }
-
-  /**
-   * Get all sessions
+   * Get all sessions (in stdio mode, this is just one or none)
    * @returns All sessions
    */
   getAllSessions(): Session[] {
-    return Array.from(this.sessions.values());
+    return this.session ? [this.session] : [];
   }
 
   /**
@@ -179,18 +149,13 @@ export class SessionManager {
    * @returns The number of active sessions
    */
   getSessionCount(): number {
-    return this.sessions.size;
+    return this.session ? 1 : 0;
   }
 
   /**
-   * Stop the session manager and clean up resources
+   * Stop the session manager
    */
   stop(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-      this.cleanupInterval = null;
-    }
-    
-    this.sessions.clear();
+    this.session = null;
   }
 }

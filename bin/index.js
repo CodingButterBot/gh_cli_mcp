@@ -2,7 +2,7 @@
 import { registerToolsList } from './register.js';
 import { allTools } from './tools.js';
 import { checkGitHubCli } from './github.js';
-import { GitHubCliServer, TransportType } from './server.js';
+import { GitHubCliServer } from './server.js';
 import fs from 'fs';
 import path from 'path';
 // Package version from package.json
@@ -25,9 +25,6 @@ OPTIONS:
   -h, --help                 Show this help message
   -v, --version              Show version information
   -c, --config <path>        Path to configuration file
-  -t, --transport <type>     Transport type (stdio, websocket, tcp)
-  -p, --port <port>          Port for websocket/tcp transport
-  --host <host>              Host for websocket/tcp transport
   --session-timeout <ms>     Session timeout in milliseconds
 
 DESCRIPTION:
@@ -40,14 +37,8 @@ REQUIREMENTS:
   - Node.js v18 or later is required
 
 EXAMPLES:
-  # Start the MCP server with stdio transport (default)
+  # Start the MCP server
   npx gh-cli-mcp
-
-  # Start the MCP server with WebSocket transport
-  npx gh-cli-mcp --transport websocket --port 3000
-
-  # Start the MCP server with TCP transport
-  npx gh-cli-mcp --transport tcp --port 3001
 
   # Use a configuration file
   npx gh-cli-mcp --config ./my-config.json
@@ -69,12 +60,7 @@ function showVersion() {
 function processArgs() {
     const args = process.argv.slice(2);
     let configPath = DEFAULT_CONFIG_PATH;
-    const config = {
-        transport: {
-            type: TransportType.STDIO,
-            options: {}
-        }
-    };
+    const config = {};
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
         if (arg === '-h' || arg === '--help') {
@@ -87,28 +73,6 @@ function processArgs() {
         }
         if ((arg === '-c' || arg === '--config') && i + 1 < args.length) {
             configPath = args[++i];
-        }
-        if ((arg === '-t' || arg === '--transport') && i + 1 < args.length) {
-            const transport = args[++i].toLowerCase();
-            if (transport === 'stdio' || transport === 'websocket' || transport === 'tcp') {
-                config.transport.type = transport;
-            }
-            else {
-                console.error(`Error: Invalid transport type: ${transport}`);
-                console.error('Valid types are: stdio, websocket, tcp');
-                return false;
-            }
-        }
-        if ((arg === '-p' || arg === '--port') && i + 1 < args.length) {
-            const port = parseInt(args[++i], 10);
-            if (isNaN(port) || port < 0 || port > 65535) {
-                console.error(`Error: Invalid port number: ${args[i]}`);
-                return false;
-            }
-            config.transport.options.port = port;
-        }
-        if (arg === '--host' && i + 1 < args.length) {
-            config.transport.options.host = args[++i];
         }
         if (arg === '--session-timeout' && i + 1 < args.length) {
             const timeout = parseInt(args[++i], 10);
@@ -124,11 +88,6 @@ function processArgs() {
         if (fs.existsSync(configPath)) {
             const fileConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
             // Merge file config with command line config (command line takes precedence)
-            config.transport.type = config.transport.type || fileConfig.transport?.type;
-            config.transport.options = {
-                ...fileConfig.transport?.options,
-                ...config.transport.options
-            };
             if (!config.sessionTimeout && fileConfig.sessionTimeout) {
                 config.sessionTimeout = fileConfig.sessionTimeout;
             }

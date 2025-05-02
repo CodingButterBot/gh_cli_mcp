@@ -25,30 +25,22 @@
     "model",
     "context",
     "protocol",
-    "websocket",
-    "tcp",
-    "multi-client"
+    "stdio"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
-    "uuid": "^9.0.1",
-    "ws": "^8.18.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.0",
     "@types/supertest": "^6.0.2",
-    "@types/uuid": "^9.0.8",
-    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
-    "jest-websocket-mock": "^2.5.0",
-    "mock-socket": "^9.3.1",
     "nodemon": "^3.0.2",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",

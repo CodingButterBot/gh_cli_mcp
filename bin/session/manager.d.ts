@@ -1,5 +1,9 @@
 /**
- * Session manager for tracking client sessions and their state
+ * Simplified session manager for the stdio-only transport
+ * Keeps compatibility with the original API but with simpler implementation
+ */
+/**
+ * Session interface
  */
 export interface Session {
     id: string;
@@ -8,28 +12,18 @@ export interface Session {
     data: Record<string, unknown>;
 }
 /**
- * SessionManager - Manages client sessions for the MCP server
+ * SessionManager - Basic session management for the MCP server
  */
 export declare class SessionManager {
-    private sessions;
-    private cleanupInterval;
-    private sessionTimeout;
+    private session;
     /**
      * Create a new session manager
-     * @param sessionTimeout Milliseconds before inactive sessions are cleaned up (default: 30 minutes)
+     * @param sessionTimeout Not used in stdio-only mode
      */
     constructor(sessionTimeout?: number);
     /**
-     * Start the cleanup interval to remove expired sessions
-     */
-    private startCleanupInterval;
-    /**
-     * Clean up expired sessions
-     */
-    private cleanupSessions;
-    /**
      * Create a new session
-     * @param sessionId The session ID (optional, will be generated if not provided)
+     * @param sessionId The session ID
      * @param initialData Initial session data
      * @returns The created session
      */
@@ -75,12 +69,7 @@ export declare class SessionManager {
      */
     touchSession(sessionId: string): boolean;
     /**
-     * Generate a unique session ID
-     * @returns A unique session ID
-     */
-    private generateSessionId;
-    /**
-     * Get all sessions
+     * Get all sessions (in stdio mode, this is just one or none)
      * @returns All sessions
      */
     getAllSessions(): Session[];
@@ -90,7 +79,7 @@ export declare class SessionManager {
      */
     getSessionCount(): number;
     /**
-     * Stop the session manager and clean up resources
+     * Stop the session manager
      */
     stop(): void;
 }
