@@ -138,7 +138,7 @@ function processArgs() {
  * @throws Will throw an error if server initialization fails
  * @function
  */
-async function main() {
+export async function main() {
   try {
     // Process command line arguments
     const config = processArgs();
@@ -172,8 +172,11 @@ async function main() {
   }
 }
 
-// Run the server
-main().catch(error => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-});
+// If this file is run directly, start the server using the correct ESM check
+import * as url from 'url';
+if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
+  main().catch(error => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
+}

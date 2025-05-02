@@ -1,0 +1,32 @@
+# Source code
+src/
+
+# Configuration files
+tsconfig.json
+.eslintrc.json
+.prettierrc
+.editorconfig
+jest.config.js
+
+# Development directories
+test/
+node_modules/
+.github/
+gh_cli_mcp.wiki/
+
+# Local development files
+*.local.*
+settings.local.*
+.env
+*.log
+
+# Example files
+*.example.*
+
+# Build artifacts
+coverage/
+.nyc_output/
+
+# Git files
+.git/
+.gitignore
