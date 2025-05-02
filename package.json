@@ -1,6 +1,6 @@
 {
   "name": "gh-cli-mcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "GitHub CLI MCP server for AI assistants - access GitHub via Model Context Protocol",
   "main": "dist/index.js",
   "type": "module",
@@ -33,7 +33,7 @@
   "author": "CodingButterBot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CodingButterBot/gh_cli_mcp.git"
+    "url": "git+https://github.com/CodingButterBot/gh_cli_mcp.git"
   },
   "bugs": {
     "url": "https://github.com/CodingButterBot/gh_cli_mcp/issues"
