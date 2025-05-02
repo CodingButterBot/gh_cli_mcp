@@ -1,7 +1,6 @@
-import { GitHubCliServer, TransportType } from '../../src/server.js';
+import { GitHubCliServer } from '../../src/server.js';
 import { Tool } from '../../src/stdio.js';
 import { z } from 'zod';
-import { WebSocket as MockWebSocket } from 'mock-socket';
 
 // Mock execGitHubCommand
 jest.mock('../../src/github.js', () => ({
@@ -36,22 +35,15 @@ describe('GitHubCliServer', () => {
   test('should create server with default config', () => {
     server = new GitHubCliServer();
     expect(server).toBeDefined();
-    expect(server.config.transport.type).toBe(TransportType.STDIO);
   });
   
   test('should create server with custom config', () => {
     server = new GitHubCliServer({
-      transport: {
-        type: TransportType.WEBSOCKET,
-        options: {
-          port: 3000
-        }
-      }
+      sessionTimeout: 60000
     });
     
     expect(server).toBeDefined();
-    expect(server.config.transport.type).toBe(TransportType.WEBSOCKET);
-    expect(server.config.transport.options?.port).toBe(3000);
+    expect(server.config.sessionTimeout).toBe(60000);
   });
   
   test('should register tools', () => {
@@ -121,12 +113,8 @@ describe('GitHubCliServer', () => {
   });
   
   // This test requires manual verification of console output
-  test('should start server with stdio transport', async () => {
-    server = new GitHubCliServer({
-      transport: {
-        type: TransportType.STDIO
-      }
-    });
+  test('should start server', async () => {
+    server = new GitHubCliServer();
     
     // Jest won't capture console.error output directly
     const originalConsoleError = console.error;

@@ -23,11 +23,10 @@ const execAsync = promisify(exec);
 const COMMAND_TIMEOUT = 30000;
 
 /**
- * Map to track active commands by session ID
- * Used to cancel commands when needed
- * @constant {Map<string, AbortController>}
+ * Store active command for the single stdio connection
+ * @constant {AbortController|null}
  */
-const activeCommands = new Map<string, AbortController>();
+let activeCommand: AbortController | null = null;
 
 /**
  * Convert parameters object to GitHub CLI command arguments
@@ -81,29 +80,23 @@ export async function execGitHubCommand(
   const controller = new AbortController();
   const { signal } = controller;
   
-  // Store the controller with the session ID if provided
-  if (sessionId) {
-    // Clean up any existing commands for this session
-    const existingController = activeCommands.get(sessionId);
-    if (existingController) {
-      try {
-        existingController.abort();
-      } catch (e) {
-        // Ignore errors when aborting
-      }
+  // Clean up any existing command
+  if (activeCommand) {
+    try {
+      activeCommand.abort();
+    } catch (e) {
+      // Ignore errors when aborting
     }
-    
-    // Store the new controller
-    activeCommands.set(sessionId, controller);
   }
+  
+  // Store the new controller
+  activeCommand = controller;
   
   // Set timeout to cancel the command if it takes too long
   const timeoutId = setTimeout(() => {
     controller.abort();
     // Clean up the active command
-    if (sessionId) {
-      activeCommands.delete(sessionId);
-    }
+    activeCommand = null;
   }, COMMAND_TIMEOUT);
   
   try {
@@ -162,9 +155,7 @@ export async function execGitHubCommand(
     clearTimeout(timeoutId);
     
     // Clean up the active command
-    if (sessionId) {
-      activeCommands.delete(sessionId);
-    }
+    activeCommand = null;
   }
 }
 
@@ -189,17 +180,15 @@ export async function checkGitHubCli(): Promise<boolean> {
 }
 
 /**
- * Cancel all active commands for a session
- * @param sessionId The session ID
+ * Cancel the active command
  */
-export function cancelCommandsForSession(sessionId: string): void {
-  const controller = activeCommands.get(sessionId);
-  if (controller) {
+export function cancelActiveCommand(): void {
+  if (activeCommand) {
     try {
-      controller.abort();
+      activeCommand.abort();
     } catch (e) {
       // Ignore errors when aborting
     }
-    activeCommands.delete(sessionId);
+    activeCommand = null;
   }
 }// Test comment for PR

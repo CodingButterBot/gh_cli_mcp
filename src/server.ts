@@ -28,11 +28,14 @@ const DEFAULT_CONFIG: ServerConfig = {
 };
 
 /**
- * MCP Server for GitHub CLI tools
+ * MCP Server for GitHub CLI tools using stdio transport
  */
 export class GitHubCliServer extends BaseMcpServer {
   private toolsList: Tool<any>[] = [];
   public readonly config: ServerConfig;
+  private transport: ServerTransport | null = null;
+  // Standard session ID for stdio transport (since there's only one client)
+  private static readonly STDIO_SESSION_ID = 'stdio-session';
 
   /**
    * Create a new GitHub CLI MCP server
@@ -48,7 +51,7 @@ export class GitHubCliServer extends BaseMcpServer {
     super(mergedConfig);
     this.config = mergedConfig;
     
-    console.error(`[Server] Created with stdio transport`);
+    console.error(`[Server] Created GitHub CLI MCP Server`);
   }
 
   /**
@@ -64,9 +67,10 @@ export class GitHubCliServer extends BaseMcpServer {
       description: string;
     }
   ) {
-    const wrappedHandler = async (params: z.infer<T>, sessionId?: string) => {
-      // Call the original handler
-      return await handler(params, sessionId);
+    // Always use the standard session ID for stdio
+    const wrappedHandler = async (params: z.infer<T>) => {
+      // Call the original handler with the standard session ID
+      return await handler(params, GitHubCliServer.STDIO_SESSION_ID);
     };
     
     const tool = new Tool(name, schema, wrappedHandler, options);
@@ -94,17 +98,21 @@ export class GitHubCliServer extends BaseMcpServer {
    */
   async start() {
     // Create the transport
-    const transport = new StdioServerTransport();
+    this.transport = new StdioServerTransport();
     
     // Connect to the transport
-    await this.connect(transport);
+    await this.connect(this.transport);
     
     console.error('🚀 GitHub CLI MCP Server running on stdio');
     
     // Return a close function that uses the transport's close method
     return {
       close: () => {
-        transport.close();
+        if (this.transport) {
+          this.transport.close();
+          this.transport = null;
+        }
+        
         console.error('MCP server closed');
       }
     };

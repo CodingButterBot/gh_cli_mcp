@@ -48,14 +48,14 @@ OPTIONS:
 DESCRIPTION:
   This tool provides a Model Context Protocol (MCP) server for GitHub CLI.
   It allows AI assistants to interact with GitHub repositories through
-  standardized interfaces.
+  standardized interfaces using stdio transport.
 
 REQUIREMENTS:
   - GitHub CLI must be installed and authenticated
   - Node.js v18 or later is required
 
 EXAMPLES:
-  # Start the MCP server
+  # Start the MCP server (uses stdio transport)
   npx gh-cli-mcp
 
   # Use a configuration file
