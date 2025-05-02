@@ -1,12 +1,31 @@
+/**
+ * GitHub CLI Command Execution Module
+ * 
+ * This module provides functions for executing GitHub CLI commands
+ * with proper error handling, timeouts, and parameter formatting.
+ * 
+ * @module github
+ */
+
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
+/**
+ * Promisified exec function for async/await usage
+ * @constant
+ */
 const execAsync = promisify(exec);
 
-// Command execution timeout in milliseconds (30 seconds)
+/**
+ * Command execution timeout in milliseconds (30 seconds)
+ * @constant {number}
+ */
 const COMMAND_TIMEOUT = 30000;
 
-// Store active command
+/**
+ * Store active command for the single stdio connection
+ * @constant {AbortController|null}
+ */
 let activeCommand: AbortController | null = null;
 
 /**

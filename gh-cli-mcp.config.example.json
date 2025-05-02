@@ -1,11 +1,4 @@
 {
-  "transport": {
-    "type": "websocket",
-    "options": {
-      "port": 3000,
-      "host": "localhost"
-    }
-  },
   "sessionTimeout": 1800000,
   "permissions": {
     "allow": [

@@ -159,5 +159,5 @@ export function cancelCommandsForSession(sessionId) {
         }
         activeCommands.delete(sessionId);
     }
-}
+} // Test comment for PR
 //# sourceMappingURL=github.js.map
