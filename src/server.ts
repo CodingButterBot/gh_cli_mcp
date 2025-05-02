@@ -166,12 +166,12 @@ export class GitHubCliServer extends BaseMcpServer {
     // Connect to the transport
     await this.connect(this.transport);
     
-    // Get the message emitter to track session IDs
-    this.transportEmitter = this.transport.getMessageEmitter();
-    
     // Support session tracking for multi-client transports
     if (this.transport instanceof WebSocketServerTransport || 
         this.transport instanceof TCPServerTransport) {
+      
+      // Get the message emitter to track session IDs (only available on WebSocket and TCP transports)
+      this.transportEmitter = this.transport.getMessageEmitter();
       
       // Listen for client events with session information
       this.transportEmitter?.on('message', ({ text, sessionId }) => {
@@ -189,6 +189,7 @@ export class GitHubCliServer extends BaseMcpServer {
         console.error(`   TCP server at ${this.config.transport.options?.host || 'localhost'}:${this.config.transport.options?.port || 3000}`);
       }
     } else {
+      // For stdio transport, we don't need message emitter or session tracking
       console.error('🚀 GitHub CLI MCP Server running on stdio');
     }
     
