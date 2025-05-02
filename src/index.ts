@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+/**
+ * GitHub CLI MCP Server - Main entry point
+ * 
+ * This module initializes and starts the MCP server that wraps GitHub CLI commands,
+ * making them available to AI assistants through the Model Context Protocol.
+ * 
+ * @module index
+ */
+
 import { registerToolsList } from './register.js';
 import { allTools } from './tools.js';
 import { checkGitHubCli } from './github.js';
@@ -6,16 +15,22 @@ import { GitHubCliServer } from './server.js';
 import fs from 'fs';
 import path from 'path';
 
-// Package version from package.json
+/**
+ * Current package version
+ * @constant {string}
+ */
 const VERSION = '1.1.0';
 
 /**
- * Default configuration file path
+ * Default configuration file path in the current working directory
+ * @constant {string}
  */
 const DEFAULT_CONFIG_PATH = path.join(process.cwd(), 'gh-cli-mcp.config.json');
 
 /**
- * Display help information
+ * Display help information to the console
+ * Shows available command line options, descriptions, and usage examples
+ * @function
  */
 function showHelp() {
   console.error(`
@@ -52,15 +67,19 @@ EXAMPLES:
 }
 
 /**
- * Display version information
+ * Display version information to the console
+ * Used when --version flag is specified
+ * @function
  */
 function showVersion() {
   console.error(`GitHub CLI MCP Server v${VERSION}`);
 }
 
 /**
- * Process command line arguments
- * @returns Parsed configuration or false if should exit
+ * Process command line arguments and configuration file
+ * Parses all command line flags and merges them with configuration from file
+ * @returns {object|boolean} Parsed configuration object or false if the program should exit
+ * @function
  */
 function processArgs() {
   const args = process.argv.slice(2);
@@ -114,6 +133,10 @@ function processArgs() {
 
 /**
  * Main function to start the GitHub CLI MCP server
+ * Initializes configuration, checks prerequisites, and starts the server
+ * @returns {Promise<void>} Resolves when server starts successfully
+ * @throws Will throw an error if server initialization fails
+ * @function
  */
 async function main() {
   try {
