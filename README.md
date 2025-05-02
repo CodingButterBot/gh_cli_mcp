@@ -19,6 +19,16 @@ npm install -g gh-cli-mcp
 gh-cli-mcp
 ```
 
+### 🤖 Use with Claude
+
+With Claude Code CLI:
+```bash
+claude --mcp "gh-cli-mcp:github-cli:stdio:http://localhost:8888"
+```
+
+With Claude Desktop: Add MCP integration in Settings → Tools & Integrations  
+See [Installation Guide](https://github.com/CodingButterBot/gh_cli_mcp/wiki/Installation#using-with-claude) for detailed instructions.
+
 ## 📖 Documentation
 
 Visit our [GitHub Wiki](https://github.com/CodingButterBot/gh_cli_mcp/wiki) for complete documentation:
