@@ -33,7 +33,7 @@ const DEFAULT_CONFIG: ServerConfig = {
 export class GitHubCliServer extends BaseMcpServer {
   private toolsList: Tool<any>[] = [];
   public readonly config: ServerConfig;
-  private transport: ServerTransport | null = null;
+  private transport: StdioServerTransport | null = null;
   // Standard session ID for stdio transport (since there's only one client)
   private static readonly STDIO_SESSION_ID = 'stdio-session';
 

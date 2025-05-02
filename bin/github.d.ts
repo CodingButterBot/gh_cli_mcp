@@ -1,4 +1,12 @@
 /**
+ * GitHub CLI Command Execution Module
+ *
+ * This module provides functions for executing GitHub CLI commands
+ * with proper error handling, timeouts, and parameter formatting.
+ *
+ * @module github
+ */
+/**
  * Convert parameters object to GitHub CLI command arguments
  * @param params Parameters to convert to CLI arguments
  * @returns Array of CLI arguments
@@ -24,8 +32,7 @@ export declare function execGitHubCommand(command: string, subcommand: string, p
  */
 export declare function checkGitHubCli(): Promise<boolean>;
 /**
- * Cancel all active commands for a session
- * @param sessionId The session ID
+ * Cancel the active command
  */
-export declare function cancelCommandsForSession(sessionId: string): void;
+export declare function cancelActiveCommand(): void;
 //# sourceMappingURL=github.d.ts.map

@@ -1,7 +1,21 @@
+/**
+ * Standard I/O utilities for the MCP server
+ *
+ * This module provides the base Tool class and a simple stdio-based server
+ * implementation for the GitHub CLI MCP.
+ *
+ * @module stdio
+ */
 import { z } from 'zod';
 import { McpServer as BaseMcpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 /**
  * Tool class for defining GitHub CLI tools
+ *
+ * Represents a single tool that can be registered with the MCP server.
+ * Each tool has a name, schema, handler function, and description.
+ *
+ * @class
+ * @template T The Zod schema type for the tool's parameters
  */
 export declare class Tool<T extends z.ZodTypeAny> {
     name: string;
@@ -15,6 +29,15 @@ export declare class Tool<T extends z.ZodTypeAny> {
     options: {
         description: string;
     };
+    /**
+     * Creates a new Tool instance
+     *
+     * @param {string} name - The name of the tool (e.g., 'gh_pr_list')
+     * @param {T} schema - Zod schema defining the tool's parameters
+     * @param {Function} handler - Async function that executes the tool's logic
+     * @param {Object} options - Additional options for the tool
+     * @param {string} options.description - Human-readable description of the tool
+     */
     constructor(name: string, schema: T, handler: (params: z.infer<T>, sessionId?: string) => Promise<{
         content: Array<{
             type: string;
@@ -23,6 +46,11 @@ export declare class Tool<T extends z.ZodTypeAny> {
     }>, options: {
         description: string;
     });
+    /**
+     * Returns the tool's definition as a tuple
+     *
+     * @returns {Array} A tuple containing [name, schema, handler, options]
+     */
     definition(): [string, z.ZodTypeAny, (params: any, sessionId?: string) => Promise<any>, {
         description: string;
     }];

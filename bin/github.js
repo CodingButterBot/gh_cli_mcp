@@ -1,10 +1,28 @@
+/**
+ * GitHub CLI Command Execution Module
+ *
+ * This module provides functions for executing GitHub CLI commands
+ * with proper error handling, timeouts, and parameter formatting.
+ *
+ * @module github
+ */
 import { exec } from 'child_process';
 import { promisify } from 'util';
+/**
+ * Promisified exec function for async/await usage
+ * @constant
+ */
 const execAsync = promisify(exec);
-// Command execution timeout in milliseconds (30 seconds)
+/**
+ * Command execution timeout in milliseconds (30 seconds)
+ * @constant {number}
+ */
 const COMMAND_TIMEOUT = 30000;
-// Store active commands by session
-const activeCommands = new Map();
+/**
+ * Store active command for the single stdio connection
+ * @constant {AbortController|null}
+ */
+let activeCommand = null;
 /**
  * Convert parameters object to GitHub CLI command arguments
  * @param params Parameters to convert to CLI arguments
@@ -48,28 +66,22 @@ export async function execGitHubCommand(command, subcommand, params, sessionId) 
     // Create an AbortController for timeout management
     const controller = new AbortController();
     const { signal } = controller;
-    // Store the controller with the session ID if provided
-    if (sessionId) {
-        // Clean up any existing commands for this session
-        const existingController = activeCommands.get(sessionId);
-        if (existingController) {
-            try {
-                existingController.abort();
-            }
-            catch (e) {
-                // Ignore errors when aborting
-            }
+    // Clean up any existing command
+    if (activeCommand) {
+        try {
+            activeCommand.abort();
         }
-        // Store the new controller
-        activeCommands.set(sessionId, controller);
+        catch (e) {
+            // Ignore errors when aborting
+        }
     }
+    // Store the new controller
+    activeCommand = controller;
     // Set timeout to cancel the command if it takes too long
     const timeoutId = setTimeout(() => {
         controller.abort();
         // Clean up the active command
-        if (sessionId) {
-            activeCommands.delete(sessionId);
-        }
+        activeCommand = null;
     }, COMMAND_TIMEOUT);
     try {
         // Build the GitHub CLI command
@@ -121,9 +133,7 @@ export async function execGitHubCommand(command, subcommand, params, sessionId) 
         // Always clear the timeout
         clearTimeout(timeoutId);
         // Clean up the active command
-        if (sessionId) {
-            activeCommands.delete(sessionId);
-        }
+        activeCommand = null;
     }
 }
 /**
@@ -145,19 +155,17 @@ export async function checkGitHubCli() {
     }
 }
 /**
- * Cancel all active commands for a session
- * @param sessionId The session ID
+ * Cancel the active command
  */
-export function cancelCommandsForSession(sessionId) {
-    const controller = activeCommands.get(sessionId);
-    if (controller) {
+export function cancelActiveCommand() {
+    if (activeCommand) {
         try {
-            controller.abort();
+            activeCommand.abort();
         }
         catch (e) {
             // Ignore errors when aborting
         }
-        activeCommands.delete(sessionId);
+        activeCommand = null;
     }
 } // Test comment for PR
 //# sourceMappingURL=github.js.map

@@ -1,6 +1,7 @@
 import { GitHubCliServer } from '../../src/server.js';
 import { Tool } from '../../src/stdio.js';
 import { z } from 'zod';
+import { jest } from '@jest/globals';
 
 // Mock execGitHubCommand
 jest.mock('../../src/github.js', () => ({
@@ -12,7 +13,7 @@ jest.mock('../../src/github.js', () => ({
     });
   }),
   checkGitHubCli: jest.fn().mockResolvedValue(true),
-  cancelCommandsForSession: jest.fn()
+  cancelActiveCommand: jest.fn()
 }));
 
 describe('GitHubCliServer', () => {

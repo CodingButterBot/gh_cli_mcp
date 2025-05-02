@@ -1,7 +1,20 @@
+/**
+ * GitHub CLI Tool Definitions
+ *
+ * This module defines all the available GitHub CLI tools with their
+ * schemas, handlers, and descriptions. Tools are grouped by category
+ * (PR, issue, repo, etc.) and exported both individually and as a
+ * combined array.
+ *
+ * @module tools
+ */
 import { z } from 'zod';
 import { Tool } from './stdio.js';
 /**
  * Pull Request Tools
+ * Collection of tools for working with GitHub Pull Requests
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const prTools: {
     list: Tool<z.ZodObject<{
@@ -118,6 +131,9 @@ export declare const prTools: {
 };
 /**
  * Issue Tools
+ * Collection of tools for working with GitHub Issues
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const issueTools: {
     list: Tool<z.ZodObject<{
@@ -225,6 +241,9 @@ export declare const issueTools: {
 };
 /**
  * Repository Tools
+ * Collection of tools for working with GitHub Repositories
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const repoTools: {
     view: Tool<z.ZodObject<{
@@ -257,6 +276,9 @@ export declare const repoTools: {
 };
 /**
  * Project Tools
+ * Collection of tools for working with GitHub Projects
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const projectTools: {
     view: Tool<z.ZodObject<{
@@ -321,6 +343,9 @@ export declare const projectTools: {
 };
 /**
  * Workflow Tools
+ * Collection of tools for working with GitHub Actions Workflows
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const workflowTools: {
     list: Tool<z.ZodObject<{
@@ -387,6 +412,9 @@ export declare const workflowTools: {
 };
 /**
  * Release Tools
+ * Collection of tools for working with GitHub Releases
+ *
+ * @constant {Object<string, Tool>}
  */
 export declare const releaseTools: {
     list: Tool<z.ZodObject<{
@@ -453,7 +481,12 @@ export declare const releaseTools: {
     }>>;
 };
 /**
- * All GitHub CLI tools
+ * All GitHub CLI tools combined into a single array
+ *
+ * This array contains all available tools from all categories,
+ * flattened into a single list for easy registration with the server.
+ *
+ * @constant {Tool<any>[]}
  */
 export declare const allTools: (Tool<z.ZodObject<{
     repo: z.ZodOptional<z.ZodString>;

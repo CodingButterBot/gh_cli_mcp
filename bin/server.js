@@ -13,11 +13,14 @@ const DEFAULT_CONFIG = {
     sessionTimeout: 30 * 60 * 1000 // 30 minutes
 };
 /**
- * MCP Server for GitHub CLI tools
+ * MCP Server for GitHub CLI tools using stdio transport
  */
 export class GitHubCliServer extends BaseMcpServer {
     toolsList = [];
     config;
+    transport = null;
+    // Standard session ID for stdio transport (since there's only one client)
+    static STDIO_SESSION_ID = 'stdio-session';
     /**
      * Create a new GitHub CLI MCP server
      * @param config Server configuration
@@ -30,15 +33,16 @@ export class GitHubCliServer extends BaseMcpServer {
         };
         super(mergedConfig);
         this.config = mergedConfig;
-        console.error(`[Server] Created with stdio transport`);
+        console.error(`[Server] Created GitHub CLI MCP Server`);
     }
     /**
      * Add a tool with the given name, schema, handler, and options
      */
     addTool(name, schema, handler, options) {
-        const wrappedHandler = async (params, sessionId) => {
-            // Call the original handler
-            return await handler(params, sessionId);
+        // Always use the standard session ID for stdio
+        const wrappedHandler = async (params) => {
+            // Call the original handler with the standard session ID
+            return await handler(params, GitHubCliServer.STDIO_SESSION_ID);
         };
         const tool = new Tool(name, schema, wrappedHandler, options);
         this.toolsList.push(tool);
@@ -61,14 +65,17 @@ export class GitHubCliServer extends BaseMcpServer {
      */
     async start() {
         // Create the transport
-        const transport = new StdioServerTransport();
+        this.transport = new StdioServerTransport();
         // Connect to the transport
-        await this.connect(transport);
+        await this.connect(this.transport);
         console.error('🚀 GitHub CLI MCP Server running on stdio');
         // Return a close function that uses the transport's close method
         return {
             close: () => {
-                transport.close();
+                if (this.transport) {
+                    this.transport.close();
+                    this.transport = null;
+                }
                 console.error('MCP server closed');
             }
         };

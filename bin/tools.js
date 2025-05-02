@@ -1,9 +1,22 @@
+/**
+ * GitHub CLI Tool Definitions
+ *
+ * This module defines all the available GitHub CLI tools with their
+ * schemas, handlers, and descriptions. Tools are grouped by category
+ * (PR, issue, repo, etc.) and exported both individually and as a
+ * combined array.
+ *
+ * @module tools
+ */
 import { z } from 'zod';
 import { Tool } from './stdio.js';
 import { execGitHubCommand } from './github.js';
 import { pullRequestParamsSchema, issueParamsSchema, baseGitHubParamsSchema, filterParamsSchema, } from './register.js';
 /**
  * Pull Request Tools
+ * Collection of tools for working with GitHub Pull Requests
+ *
+ * @constant {Object<string, Tool>}
  */
 export const prTools = {
     list: new Tool('gh_pr_list', filterParamsSchema, async (params, sessionId) => {
@@ -29,6 +42,9 @@ export const prTools = {
 };
 /**
  * Issue Tools
+ * Collection of tools for working with GitHub Issues
+ *
+ * @constant {Object<string, Tool>}
  */
 export const issueTools = {
     list: new Tool('gh_issue_list', filterParamsSchema, async (params, sessionId) => {
@@ -53,6 +69,9 @@ export const issueTools = {
 };
 /**
  * Repository Tools
+ * Collection of tools for working with GitHub Repositories
+ *
+ * @constant {Object<string, Tool>}
  */
 export const repoTools = {
     view: new Tool('gh_repo_view', baseGitHubParamsSchema.extend({
@@ -71,6 +90,9 @@ export const repoTools = {
 };
 /**
  * Project Tools
+ * Collection of tools for working with GitHub Projects
+ *
+ * @constant {Object<string, Tool>}
  */
 export const projectTools = {
     view: new Tool('gh_project_view', baseGitHubParamsSchema.extend({
@@ -101,6 +123,9 @@ export const projectTools = {
 };
 /**
  * Workflow Tools
+ * Collection of tools for working with GitHub Actions Workflows
+ *
+ * @constant {Object<string, Tool>}
  */
 export const workflowTools = {
     list: new Tool('gh_workflow_list', baseGitHubParamsSchema.extend({
@@ -133,6 +158,9 @@ export const workflowTools = {
 };
 /**
  * Release Tools
+ * Collection of tools for working with GitHub Releases
+ *
+ * @constant {Object<string, Tool>}
  */
 export const releaseTools = {
     list: new Tool('gh_release_list', baseGitHubParamsSchema.extend({
@@ -163,7 +191,12 @@ export const releaseTools = {
     }, { description: 'Delete a release' })
 };
 /**
- * All GitHub CLI tools
+ * All GitHub CLI tools combined into a single array
+ *
+ * This array contains all available tools from all categories,
+ * flattened into a single list for easy registration with the server.
+ *
+ * @constant {Tool<any>[]}
  */
 export const allTools = [
     ...Object.values(prTools),

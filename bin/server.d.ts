@@ -13,11 +13,13 @@ export interface ServerConfig {
     sessionTimeout?: number;
 }
 /**
- * MCP Server for GitHub CLI tools
+ * MCP Server for GitHub CLI tools using stdio transport
  */
 export declare class GitHubCliServer extends BaseMcpServer {
     private toolsList;
     readonly config: ServerConfig;
+    private transport;
+    private static readonly STDIO_SESSION_ID;
     /**
      * Create a new GitHub CLI MCP server
      * @param config Server configuration
