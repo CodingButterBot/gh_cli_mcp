@@ -92,7 +92,6 @@ export class GitHubCliServer extends BaseMcpServer {
     this.toolsList.push(tool);
     
     // Create a wrapper handler for the MCP SDK
-    // @ts-expect-error - Type mismatches as we're adapting between different versions
     const wrappedHandler = async (extra: any) => {
       try {
         // Extract sessionId and params from extra if available
