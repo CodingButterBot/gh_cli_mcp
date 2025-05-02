@@ -182,4 +182,4 @@ export function cancelCommandsForSession(sessionId: string): void {
     }
     activeCommands.delete(sessionId);
   }
-}
+}// Test comment for PR
