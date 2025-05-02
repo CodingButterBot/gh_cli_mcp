@@ -10,13 +10,11 @@ This Model Context Protocol (MCP) server wraps the GitHub CLI (`gh`) tool, enabl
 ## ✨ Features
 
 - **Complete GitHub CLI Integration** - Access GitHub from any MCP-compatible AI assistant
-- **Multi-Client Support** - Connect multiple Claude instances to a single server
-- **Multiple Transport Options** - Choose between stdio, WebSocket, and TCP transports
+- **Simple Installation** - Works with npx or global installation
 - **Pull Request Management** - List, view, create, and close PRs
 - **Issue Tracking** - Create, view, and manage issues
 - **Repository Operations** - View and list repository information
 - **Secure by Design** - Uses your existing GitHub CLI authentication
-- **Easy Setup** - Works with npx or global installation
 
 ## 📋 Prerequisites
 
@@ -28,11 +26,8 @@ This Model Context Protocol (MCP) server wraps the GitHub CLI (`gh`) tool, enabl
 ### Option 1: Run with npx (No Installation Required)
 
 ```bash
-# Start the MCP server directly with stdio (default)
+# Start the MCP server
 npx gh-cli-mcp
-
-# Start with WebSocket transport for multi-client support
-npx gh-cli-mcp --transport websocket --port 3000
 ```
 
 ### Option 2: Global Installation
@@ -52,36 +47,15 @@ The server should start and display:
 🚀 GitHub CLI MCP Server running on stdio
 ```
 
-or if using WebSocket/TCP:
-
-```
-🚀 GitHub CLI MCP Server running with websocket transport
-   WebSocket server at localhost:3000
-```
-
 ## ⚙️ Configuration
 
-### Transport Options
-
-The server supports three transport types:
-
-1. **stdio** - Default, supports one client connection
-2. **websocket** - Supports multiple client connections over WebSocket
-3. **tcp** - Supports multiple client connections over TCP
-
-You can configure the transport using command line arguments or a configuration file.
+You can configure the server using command line arguments or a configuration file.
 
 #### Command Line Options
 
 ```bash
-# Use WebSocket transport
-npx gh-cli-mcp --transport websocket --port 3000
-
-# Use TCP transport
-npx gh-cli-mcp --transport tcp --port 3001 --host 0.0.0.0
-
 # Customize session timeout (in milliseconds)
-npx gh-cli-mcp --transport websocket --session-timeout 600000
+npx gh-cli-mcp --session-timeout 600000
 ```
 
 #### Configuration File
@@ -90,13 +64,6 @@ Create a `gh-cli-mcp.config.json` file in your project directory:
 
 ```json
 {
-  "transport": {
-    "type": "websocket",
-    "options": {
-      "port": 3000,
-      "host": "localhost"
-    }
-  },
   "sessionTimeout": 1800000
 }
 ```
@@ -109,8 +76,6 @@ npx gh-cli-mcp --config ./my-config.json
 
 ### Claude Desktop / Claude Code
 
-#### Single-client Setup (stdio)
-
 Add the following to your `.mcp.json` file:
 
 ```json
@@ -120,26 +85,6 @@ Add the following to your `.mcp.json` file:
     "command": "npx",
     "args": ["gh-cli-mcp"],
     "env": {}
-  }
-}
-```
-
-#### Multi-client Setup (WebSocket/TCP)
-
-1. Start the server in a separate terminal:
-
-```bash
-npx gh-cli-mcp --transport websocket --port 3000
-```
-
-2. Configure each Claude instance to connect to the server:
-
-```json
-{
-  "github": {
-    "type": "tcp",
-    "host": "localhost",
-    "port": 3000
   }
 }
 ```
@@ -159,8 +104,6 @@ In your MCP configuration:
   }
 }
 ```
-
-For multi-client setup, use the WebSocket/TCP approach described above.
 
 ## 🛠️ Available Tools
 
@@ -257,24 +200,7 @@ Basic example with core functionality:
 }
 ```
 
-The example file `settings.local.example.json` in the repository root includes a comprehensive list of all available GitHub CLI tool permissions. This includes permissions for:
-
-- Pull request operations
-- Issue management
-- Repository viewing and listing
-- Authentication control
-- Gist management
-- Release management
-- Project management
-- Workflow operations
-- Search capabilities
-- API access
-- Secret management
-- Label operations
-- Alias management
-- Configuration settings
-
-You can customize this file to include only the specific GitHub CLI tool permissions you need.
+The example file `settings.local.example.json` in the repository root includes a comprehensive list of all available GitHub CLI tool permissions.
 
 ## 🧩 Using with Claude or Other AI Assistants
 
@@ -295,14 +221,6 @@ The AI will use the appropriate GitHub CLI MCP tools to complete these tasks.
 - **Authentication errors**: Run `gh auth login` to ensure you're logged in
 - **Command not found**: Ensure GitHub CLI is installed and in your PATH
 - **Connection errors**: Check your internet connection and GitHub status
-- **Multiple client issues**: If multiple Claude instances can't connect, ensure you're using WebSocket or TCP transport mode
-
-### Multi-client Troubleshooting
-
-- **Connection errors**: Verify the server is running with `--transport websocket` or `--transport tcp`
-- **Port conflicts**: Try a different port if the default port is in use
-- **Access issues**: If using a remote host, ensure the host and port are correctly specified
-- **Timeout problems**: Adjust the session timeout with `--session-timeout` if connections are dropping
 
 ## 👨‍💻 Development
 

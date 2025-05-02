@@ -1,22 +1,7 @@
 import { McpServer as BaseMcpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-// @ts-ignore - Ignoring module resolution error
-import { ServerTransport } from '@modelcontextprotocol/sdk/server/transport';
 import { z } from 'zod';
 import { Tool } from './stdio.js';
-import { SessionManager } from './session/manager.js';
-import { WebSocketServerTransport } from './transport/websocket.js';
-import { TCPServerTransport } from './transport/tcp.js';
-import { EventEmitter } from 'events';
-
-/**
- * Transport types supported by the server
- */
-export enum TransportType {
-  STDIO = 'stdio',
-  WEBSOCKET = 'websocket',
-  TCP = 'tcp'
-}
 
 /**
  * Server configuration options
@@ -27,13 +12,6 @@ export interface ServerConfig {
   description: string;
   homepage: string;
   license: string;
-  transport: {
-    type: TransportType;
-    options?: {
-      port?: number;
-      host?: string;
-    };
-  };
   sessionTimeout?: number;
 }
 
@@ -46,21 +24,15 @@ const DEFAULT_CONFIG: ServerConfig = {
   description: 'GitHub CLI commands via Model Context Protocol',
   homepage: 'https://github.com/codingbutter/gh-cli-mcp',
   license: 'MIT',
-  transport: {
-    type: TransportType.STDIO
-  },
   sessionTimeout: 30 * 60 * 1000 // 30 minutes
 };
 
 /**
- * MCP Server for GitHub CLI tools with multi-client support
+ * MCP Server for GitHub CLI tools
  */
 export class GitHubCliServer extends BaseMcpServer {
   private toolsList: Tool<any>[] = [];
   public readonly config: ServerConfig;
-  private sessionManager: SessionManager;
-  private transport: ServerTransport | null = null;
-  private transportEmitter: EventEmitter | null = null;
 
   /**
    * Create a new GitHub CLI MCP server
@@ -70,20 +42,13 @@ export class GitHubCliServer extends BaseMcpServer {
     // Merge with default config
     const mergedConfig = {
       ...DEFAULT_CONFIG,
-      ...config,
-      transport: {
-        ...DEFAULT_CONFIG.transport,
-        ...config.transport
-      }
+      ...config
     };
     
     super(mergedConfig);
     this.config = mergedConfig;
     
-    // Create session manager
-    this.sessionManager = new SessionManager(mergedConfig.sessionTimeout);
-    
-    console.error(`[Server] Created with transport: ${mergedConfig.transport.type}`);
+    console.error(`[Server] Created with stdio transport`);
   }
 
   /**
@@ -100,11 +65,6 @@ export class GitHubCliServer extends BaseMcpServer {
     }
   ) {
     const wrappedHandler = async (params: z.infer<T>, sessionId?: string) => {
-      // Touch the session if it exists
-      if (sessionId) {
-        this.sessionManager.touchSession(sessionId);
-      }
-      
       // Call the original handler
       return await handler(params, sessionId);
     };
@@ -130,78 +90,21 @@ export class GitHubCliServer extends BaseMcpServer {
   }
 
   /**
-   * Create a transport based on configuration
-   */
-  private createTransport(): ServerTransport {
-    const { type, options } = this.config.transport;
-    
-    switch (type) {
-      case TransportType.WEBSOCKET:
-        return new WebSocketServerTransport(
-          options?.port || 3000,
-          options?.host || 'localhost',
-          this.config.sessionTimeout
-        );
-      
-      case TransportType.TCP:
-        return new TCPServerTransport(
-          options?.port || 3000,
-          options?.host || 'localhost',
-          this.config.sessionTimeout
-        );
-      
-      case TransportType.STDIO:
-      default:
-        return new StdioServerTransport();
-    }
-  }
-
-  /**
-   * Start the server with the configured transport
+   * Start the server with stdio transport
    */
   async start() {
     // Create the transport
-    this.transport = this.createTransport();
+    const transport = new StdioServerTransport();
     
     // Connect to the transport
-    await this.connect(this.transport);
+    await this.connect(transport);
     
-    // Support session tracking for multi-client transports
-    if (this.transport instanceof WebSocketServerTransport || 
-        this.transport instanceof TCPServerTransport) {
-      
-      // Get the message emitter to track session IDs (only available on WebSocket and TCP transports)
-      this.transportEmitter = this.transport.getMessageEmitter();
-      
-      // Listen for client events with session information
-      this.transportEmitter?.on('message', ({ text, sessionId }) => {
-        if (sessionId && !this.sessionManager.getSession(sessionId)) {
-          // Create a new session for this client if it doesn't exist
-          this.sessionManager.createSession(sessionId);
-        }
-      });
-      
-      console.error(`🚀 GitHub CLI MCP Server running with ${this.config.transport.type} transport`);
-      
-      if (this.config.transport.type === TransportType.WEBSOCKET) {
-        console.error(`   WebSocket server at ${this.config.transport.options?.host || 'localhost'}:${this.config.transport.options?.port || 3000}`);
-      } else if (this.config.transport.type === TransportType.TCP) {
-        console.error(`   TCP server at ${this.config.transport.options?.host || 'localhost'}:${this.config.transport.options?.port || 3000}`);
-      }
-    } else {
-      // For stdio transport, we don't need message emitter or session tracking
-      console.error('🚀 GitHub CLI MCP Server running on stdio');
-    }
+    console.error('🚀 GitHub CLI MCP Server running on stdio');
     
     // Return a close function that uses the transport's close method
     return {
       close: () => {
-        if (this.transport) {
-          this.transport.close();
-          this.transport = null;
-        }
-        
-        this.sessionManager.stop();
+        transport.close();
         console.error('MCP server closed');
       }
     };
